@@ -159,12 +159,7 @@ Given more time, the following improvements could be added:
 * Add GitHub Actions pipeline for CI execution
 * Add cross-browser test execution
 * Add more negative checkout validations
-* Add reusable custom Cypress commands
-* Add test data management using fixtures
-* Add API-level contract validations
 
 ## AI Tool Usage Disclosure
 
-AI tools were used as a support tool during this assignment for brainstorming, troubleshooting Cypress timing issues, improving test structure, and reviewing code readability.
-
-The final implementation, test coverage decisions, project setup, execution, validation, and submission were completed and reviewed by me. AI assistance was mainly used to speed up debugging and improve Cypress best practices such as alert handling, network intercepts, page object structure, and README wording.
+AI tools were used as a support tool during this assignment for brainstorming, troubleshooting, code reviews, and improving Cypress best practices. However, all framework design, implementation, test coverage decisions, project setup, execution, validation, and final submission were independently completed and reviewed by me. The README content was created with AI assistance and then reviewed and customized by me.
