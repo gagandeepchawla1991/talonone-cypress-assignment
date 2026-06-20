@@ -73,46 +73,49 @@ Status code validations are also included to confirm backend requests are comple
 
 ## Project Structure
 
+```text
 cypress
- ├── e2e
- │   ├── auth
- │   │   ├── signup.cy.js
- │   │   ├── login.cy.js
- │   │   └── invalid-login.cy.js
- │   │
- │   ├── purchase
- │   │   ├── laptop-purchase.cy.js
- │   │   └── remove-product.cy.js
- │   │
- │   └── smoke
- │       ├── homepage.cy.js
- │       └── category-navigation.cy.js
- │
- ├── pages
- │   ├── HomePage.js
- │   ├── LoginPage.js
- │   ├── SignupPage.js
- │   ├── ProductPage.js
- │   └── CartPage.js
- │
- ├── support
- │   ├── constants
- │   │   ├── index.js
- │   │   ├── apiEndpoints.js
- │   │   ├── selectors.js
- │   │   ├── buttonText.js
- │   │   ├── categoryNames.js
- │   │   ├── productNames.js
- │   │   ├── pageText.js
- │   │   ├── navLinks.js
- │   │   ├── defaultCredentials.js
- │   │   ├── statusCodes.js
- │   │   ├── timeouts.js
- │   │   └── testData.js
- │   ├── commands.js
- │   └── e2e.js
- │
- └── fixtures
+├── e2e
+│   ├── auth
+│   │   ├── signup.cy.js
+│   │   ├── login.cy.js
+│   │   └── invalid-login.cy.js
+│   │
+│   ├── purchase
+│   │   ├── laptop-purchase.cy.js
+│   │   └── remove-product.cy.js
+│   │
+│   └── smoke
+│       ├── homepage.cy.js
+│       └── category-navigation.cy.js
+│
+├── pages
+│   ├── HomePage.js
+│   ├── LoginPage.js
+│   ├── SignupPage.js
+│   ├── ProductPage.js
+│   └── CartPage.js
+│
+├── support
+│   ├── constants
+│   │   ├── index.js
+│   │   ├── apiEndpoints.js
+│   │   ├── selectors.js
+│   │   ├── buttonText.js
+│   │   ├── categoryNames.js
+│   │   ├── productNames.js
+│   │   ├── pageText.js
+│   │   ├── navLinks.js
+│   │   ├── defaultCredentials.js
+│   │   ├── statusCodes.js
+│   │   ├── timeouts.js
+│   │   └── testData.js
+│   │
+│   ├── commands.js
+│   └── e2e.js
+│
+└── fixtures
+```
 
 ## Constants Management
 
