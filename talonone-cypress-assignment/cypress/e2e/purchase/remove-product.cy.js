@@ -1,5 +1,9 @@
 import HomePage from "../../pages/HomePage";
 import ProductPage from "../../pages/ProductPage";
+import { API_ENDPOINTS, CATEGORY_NAMES, PRODUCT_NAMES, BUTTON_TEXT, SELECTORS } from "../../support/constants";
+import { STATUS_CODES } from "../../support/constants/statusCodes";
+import { TIMEOUTS } from "../../support/constants/timeouts";
+import { TEST_DATA } from "../../support/constants/testData";
 
 describe("Remove Product From Cart Test", () => {
   beforeEach(() => {
@@ -11,19 +15,19 @@ describe("Remove Product From Cart Test", () => {
   it("should remove a laptop from the cart successfully", () => {
 
     // Navigate to laptops category and add product to cart
-    cy.intercept("POST", "**/bycat").as("loadLaptops");
+    cy.intercept("POST", API_ENDPOINTS.categories).as("loadLaptops");
 
-    HomePage.selectCategory("Laptops");
+    HomePage.selectCategory(CATEGORY_NAMES.laptops);
 
     cy.wait("@loadLaptops")
       .its("response.statusCode")
-      .should("eq", 200);
+      .should("eq", STATUS_CODES.ok);
 
-    cy.contains(".card-title", "Sony vaio i5", { timeout: 10000 })
+    cy.contains(SELECTORS.cardTitle, PRODUCT_NAMES.sonyVaioI5, { timeout: TIMEOUTS.default })
       .should("be.visible")
       .click();
 
-    cy.intercept("POST", "**/addtocart").as("addToCart");
+    cy.intercept("POST", API_ENDPOINTS.addToCart).as("addToCart");
 
     cy.window().then((win) => {
       cy.stub(win, "alert").as("cartAlert");
@@ -33,7 +37,7 @@ describe("Remove Product From Cart Test", () => {
 
     cy.wait("@addToCart")
       .its("response.statusCode")
-      .should("eq", 200);
+      .should("eq", STATUS_CODES.ok);
 
     cy.get("@cartAlert")
       .should("have.been.calledWithMatch", /Product added/);
@@ -41,28 +45,28 @@ describe("Remove Product From Cart Test", () => {
     // Verify product is present in the cart
     ProductPage.goToCart();
 
-    cy.contains("Sony vaio i5", { timeout: 10000 })
+    cy.contains(PRODUCT_NAMES.sonyVaioI5, { timeout: TIMEOUTS.default })
       .should("be.visible");
 
-    cy.get("#totalp", { timeout: 10000 })
-      .should("contain", "790");
+    cy.get(SELECTORS.totalPrice, { timeout: TIMEOUTS.default })
+      .should("contain", TEST_DATA.expectedCartTotal);
 
     // Remove product and verify cart is updated
-    cy.intercept("POST", "**/deleteitem").as("deleteItem");
+    cy.intercept("POST", API_ENDPOINTS.deleteItem).as("deleteItem");
 
-    cy.contains("tr", "Sony vaio i5")
+    cy.contains("tr", PRODUCT_NAMES.sonyVaioI5)
       .within(() => {
-        cy.contains("a", "Delete").click();
+        cy.contains("a", BUTTON_TEXT.delete).click();
       });
 
     cy.wait("@deleteItem")
       .its("response.statusCode")
-      .should("eq", 200);
+      .should("eq", STATUS_CODES.ok);
 
-    cy.contains("Sony vaio i5")
+    cy.contains(PRODUCT_NAMES.sonyVaioI5)
       .should("not.exist");
 
-    cy.get("#totalp")
-      .should("not.contain", "790");
+    cy.get(SELECTORS.totalPrice)
+      .should("not.contain", TEST_DATA.expectedCartTotal);
   });
 });

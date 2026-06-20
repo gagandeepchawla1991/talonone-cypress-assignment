@@ -1,10 +1,12 @@
+import { BUTTON_TEXT, SELECTORS } from "../support/constants";
+
 class ProductPage {
   addToCart() {
-    cy.contains("Add to cart").click();
+    cy.contains(BUTTON_TEXT.addToCart).click();
   }
 
   goToCart() {
-    cy.get("#cartur").click();
+    cy.get(SELECTORS.cartLink).click();
   }
 }
 

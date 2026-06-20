@@ -1,71 +1,17 @@
 import HomePage from "../../pages/HomePage";
 import ProductPage from "../../pages/ProductPage";
 import CartPage from "../../pages/CartPage";
+import LoginPage from "../../pages/LoginPage";
+import SignupPage from "../../pages/SignupPage";
+import { API_ENDPOINTS, CATEGORY_NAMES, PRODUCT_NAMES, SELECTORS, BUTTON_TEXT, DEFAULT_CREDENTIALS, PAGE_TEXT } from "../../support/constants";
+import { STATUS_CODES } from "../../support/constants/statusCodes";
+import { TIMEOUTS } from "../../support/constants/timeouts";
+import { TEST_DATA } from "../../support/constants/testData";
 
-const password = "Test@12345";
+const password = DEFAULT_CREDENTIALS.password;
 
 const generateUsername = () => {
   return `u${Cypress._.random(10000, 99999)}`;
-};
-
-// Create a new user account
-const signupUser = (retries = 2) => {
-  const username = generateUsername();
-
-  cy.intercept("POST", "**/signup").as("signupRequest");
-
-  HomePage.openSignup();
-
-  cy.get("#signInModal")
-    .should("be.visible");
-
-  cy.get("#sign-username")
-    .should("be.visible")
-    .clear()
-    .type(username);
-
-  cy.get("#sign-password")
-    .should("be.visible")
-    .clear()
-    .type(password);
-
-  cy.window().then((win) => {
-    cy.stub(win, "alert").as("signupAlert");
-  });
-
-  cy.contains("button", "Sign up")
-    .should("be.visible")
-    .click();
-
-  cy.wait("@signupRequest")
-    .its("response.statusCode")
-    .should("eq", 200);
-
-  return cy.get("@signupAlert")
-    .should("have.been.called")
-    .then((alertStub) => {
-      const alertText = alertStub.getCall(0).args[0];
-
-      if (alertText.includes("Sign up successful")) {
-        cy.get("#signInModal .close").click({ force: true });
-
-        cy.get("#signInModal")
-          .should("not.be.visible");
-
-        return cy.wrap(username);
-      }
-
-      if (alertText.includes("already exist") && retries > 0) {
-        cy.get("#signInModal .close").click({ force: true });
-
-        cy.get("#signInModal")
-          .should("not.be.visible");
-
-        return signupUser(retries - 1);
-      }
-
-      throw new Error(`Signup failed with alert: ${alertText}`);
-    });
 };
 
 describe("Laptop Purchase Flow", () => {
@@ -76,55 +22,33 @@ describe("Laptop Purchase Flow", () => {
   });
 
   it("should complete laptop purchase successfully", () => {
-    signupUser().then((username) => {
+    const username = generateUsername();
+
+    HomePage.openSignup();
+    SignupPage.signupAndClose(username, password).then((createdUsername) => {
 
       // Login with the newly created user
-      cy.intercept("POST", "**/login").as("loginRequest");
-
       HomePage.openLogin();
 
-      cy.get("#logInModal")
-        .should("be.visible");
-
-      cy.get("#loginusername")
-        .should("be.visible")
-        .clear()
-        .type(username);
-
-      cy.get("#loginpassword")
-        .should("be.visible")
-        .clear()
-        .type(password);
-
-      cy.contains("button", "Log in")
-        .should("be.visible")
-        .click();
-
-      cy.wait("@loginRequest")
-        .its("response.statusCode")
-        .should("eq", 200);
-
-      cy.get("#nameofuser", { timeout: 10000 })
-        .should("be.visible")
-        .and("contain", username);
+      LoginPage.login(createdUsername, password);
 
       // Navigate to laptops category and add product to cart
-      cy.intercept("POST", "**/bycat").as("loadLaptops");
+      cy.intercept("POST", API_ENDPOINTS.categories).as("loadLaptops");
 
-      HomePage.selectCategory("Laptops");
+      HomePage.selectCategory(CATEGORY_NAMES.laptops);
 
       cy.wait("@loadLaptops")
         .its("response.statusCode")
-        .should("eq", 200);
+        .should("eq", STATUS_CODES.ok);
 
-      cy.contains(".card-title", "Sony vaio i5", { timeout: 10000 })
+      cy.contains(SELECTORS.cardTitle, PRODUCT_NAMES.sonyVaioI5, { timeout: TIMEOUTS.default })
         .should("be.visible")
         .click();
 
       cy.url()
         .should("include", "prod.html");
 
-      cy.intercept("POST", "**/addtocart").as("addToCart");
+      cy.intercept("POST", API_ENDPOINTS.addToCart).as("addToCart");
 
       cy.window().then((win) => {
         cy.stub(win, "alert").as("cartAlert");
@@ -134,7 +58,7 @@ describe("Laptop Purchase Flow", () => {
 
       cy.wait("@addToCart")
         .its("response.statusCode")
-        .should("eq", 200);
+        .should("eq", STATUS_CODES.ok);
 
       cy.get("@cartAlert")
         .should("have.been.calledWithMatch", /Product added/);
@@ -142,31 +66,31 @@ describe("Laptop Purchase Flow", () => {
       // Verify cart details before checkout
       ProductPage.goToCart();
 
-      cy.contains("Sony vaio i5", { timeout: 10000 })
+      cy.contains(PRODUCT_NAMES.sonyVaioI5, { timeout: TIMEOUTS.default })
         .should("be.visible");
 
-      cy.get("#totalp", { timeout: 10000 })
+      cy.get(SELECTORS.totalPrice, { timeout: TIMEOUTS.default })
         .should("be.visible")
-        .and("contain", "790");
+        .and("contain", TEST_DATA.expectedCartTotal);
 
       // Complete purchase and verify order confirmation
       CartPage.placeOrder();
 
-      cy.get("#orderModal")
+      cy.get(SELECTORS.orderModal)
         .should("be.visible");
 
-      cy.get("#name").should("be.visible").clear().type("Test User");
-      cy.get("#country").clear().type("Germany");
-      cy.get("#city").clear().type("Berlin");
-      cy.get("#card").clear().type("4111111111111111");
-      cy.get("#month").clear().type("12");
-      cy.get("#year").clear().type("2028");
+      cy.get(SELECTORS.orderName).should("be.visible").clear().type(TEST_DATA.orderCustomerName);
+      cy.get(SELECTORS.orderCountry).clear().type(TEST_DATA.orderCountry);
+      cy.get(SELECTORS.orderCity).clear().type(TEST_DATA.orderCity);
+      cy.get(SELECTORS.orderCard).clear().type(TEST_DATA.orderCardNumber);
+      cy.get(SELECTORS.orderMonth).clear().type(TEST_DATA.orderMonth);
+      cy.get(SELECTORS.orderYear).clear().type(TEST_DATA.orderYear);
 
-      cy.contains("button", "Purchase")
+      cy.contains("button", BUTTON_TEXT.purchase)
         .should("be.visible")
         .click();
 
-      cy.contains("Thank you for your purchase!", { timeout: 10000 })
+      cy.contains(PAGE_TEXT.purchaseConfirmation, { timeout: TIMEOUTS.default })
         .should("be.visible");
     });
   });

@@ -1,5 +1,7 @@
 import HomePage from "../../pages/HomePage";
 import LoginPage from "../../pages/LoginPage";
+import { API_ENDPOINTS } from "../../support/constants";
+import { STATUS_CODES } from "../../support/constants/statusCodes";
 
 describe("Invalid Login Test", () => {
   it("should show an error message for invalid credentials", () => {
@@ -7,7 +9,7 @@ describe("Invalid Login Test", () => {
     // Open login modal and attempt authentication with invalid credentials
     cy.visit("/");
 
-    cy.intercept("POST", "**/login").as("loginRequest");
+    cy.intercept("POST", API_ENDPOINTS.login).as("loginRequest");
 
     HomePage.openLogin();
 
@@ -23,7 +25,7 @@ describe("Invalid Login Test", () => {
     // Verify login request was processed by the backend
     cy.wait("@loginRequest")
       .its("response.statusCode")
-      .should("eq", 200);
+      .should("eq", STATUS_CODES.ok);
 
     // Verify user is not allowed to log in
     cy.get("@loginAlert")
