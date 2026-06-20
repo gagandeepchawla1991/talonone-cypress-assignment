@@ -11,6 +11,8 @@ const generateUsername = () => {
 const signupUser = (retries = 2) => {
   const username = generateUsername();
 
+  cy.intercept("POST", "**/signup").as("signupRequest");
+
   HomePage.openSignup();
 
   cy.get("#sign-username")
@@ -31,6 +33,10 @@ const signupUser = (retries = 2) => {
     .should("be.visible")
     .click();
 
+  cy.wait("@signupRequest")
+    .its("response.statusCode")
+    .should("eq", 200);
+
   return cy.get("@signupAlert")
     .should("have.been.called")
     .then((alertStub) => {
@@ -43,7 +49,6 @@ const signupUser = (retries = 2) => {
 
       if (alertText.includes("already exist") && retries > 0) {
         cy.get("#signInModal .close").click({ force: true });
-        cy.wait(1000);
         return signupUser(retries - 1);
       }
 
@@ -60,6 +65,8 @@ describe("Laptop Purchase Flow", () => {
 
   it("should complete laptop purchase successfully", () => {
     signupUser().then((username) => {
+      cy.intercept("POST", "**/login").as("loginRequest");
+
       HomePage.openLogin();
 
       cy.get("#loginusername")
@@ -76,6 +83,10 @@ describe("Laptop Purchase Flow", () => {
         .should("be.visible")
         .click();
 
+      cy.wait("@loginRequest")
+        .its("response.statusCode")
+        .should("eq", 200);
+
       cy.get("#nameofuser", { timeout: 10000 })
         .should("be.visible")
         .and("contain", username);
@@ -84,7 +95,9 @@ describe("Laptop Purchase Flow", () => {
 
       HomePage.selectCategory("Laptops");
 
-      cy.wait("@loadLaptops");
+      cy.wait("@loadLaptops")
+        .its("response.statusCode")
+        .should("eq", 200);
 
       cy.contains(".card-title", "Sony vaio i5", { timeout: 10000 })
         .should("be.visible")
@@ -98,7 +111,9 @@ describe("Laptop Purchase Flow", () => {
 
       ProductPage.addToCart();
 
-      cy.wait("@addToCart");
+      cy.wait("@addToCart")
+        .its("response.statusCode")
+        .should("eq", 200);
 
       cy.get("@cartAlert")
         .should("have.been.calledWithMatch", /Product added/);
@@ -117,7 +132,10 @@ describe("Laptop Purchase Flow", () => {
       cy.get("#orderModal")
         .should("be.visible");
 
-      cy.get("#name").type("Test User");
+      cy.get("#name")
+        .should("be.visible")
+        .type("Test User");
+
       cy.get("#country").type("Germany");
       cy.get("#city").type("Berlin");
       cy.get("#card").type("4111111111111111");
