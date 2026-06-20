@@ -1,9 +1,15 @@
 import HomePage from "../../pages/HomePage";
 import ProductPage from "../../pages/ProductPage";
-import { API_ENDPOINTS, CATEGORY_NAMES, PRODUCT_NAMES, BUTTON_TEXT, SELECTORS } from "../../support/constants";
-import { STATUS_CODES } from "../../support/constants/statusCodes";
-import { TIMEOUTS } from "../../support/constants/timeouts";
-import { TEST_DATA } from "../../support/constants/testData";
+import {
+  API_ENDPOINTS,
+  CATEGORY_NAMES,
+  PRODUCT_NAMES,
+  BUTTON_TEXT,
+  SELECTORS,
+  STATUS_CODES,
+  TIMEOUTS,
+  TEST_DATA,
+} from "../../support/constants";
 
 describe("Remove Product From Cart Test", () => {
   beforeEach(() => {

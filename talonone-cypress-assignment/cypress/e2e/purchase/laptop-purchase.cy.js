@@ -3,10 +3,18 @@ import ProductPage from "../../pages/ProductPage";
 import CartPage from "../../pages/CartPage";
 import LoginPage from "../../pages/LoginPage";
 import SignupPage from "../../pages/SignupPage";
-import { API_ENDPOINTS, CATEGORY_NAMES, PRODUCT_NAMES, SELECTORS, BUTTON_TEXT, DEFAULT_CREDENTIALS, PAGE_TEXT } from "../../support/constants";
-import { STATUS_CODES } from "../../support/constants/statusCodes";
-import { TIMEOUTS } from "../../support/constants/timeouts";
-import { TEST_DATA } from "../../support/constants/testData";
+import {
+  API_ENDPOINTS,
+  CATEGORY_NAMES,
+  PRODUCT_NAMES,
+  SELECTORS,
+  BUTTON_TEXT,
+  DEFAULT_CREDENTIALS,
+  PAGE_TEXT,
+  STATUS_CODES,
+  TIMEOUTS,
+  TEST_DATA,
+} from "../../support/constants";
 
 const password = DEFAULT_CREDENTIALS.password;
 
@@ -79,16 +87,9 @@ describe("Laptop Purchase Flow", () => {
       cy.get(SELECTORS.orderModal)
         .should("be.visible");
 
-      cy.get(SELECTORS.orderName).should("be.visible").clear().type(TEST_DATA.orderCustomerName);
-      cy.get(SELECTORS.orderCountry).clear().type(TEST_DATA.orderCountry);
-      cy.get(SELECTORS.orderCity).clear().type(TEST_DATA.orderCity);
-      cy.get(SELECTORS.orderCard).clear().type(TEST_DATA.orderCardNumber);
-      cy.get(SELECTORS.orderMonth).clear().type(TEST_DATA.orderMonth);
-      cy.get(SELECTORS.orderYear).clear().type(TEST_DATA.orderYear);
+      CartPage.fillOrderForm();
 
-      cy.contains("button", BUTTON_TEXT.purchase)
-        .should("be.visible")
-        .click();
+      CartPage.confirmOrder();
 
       cy.contains(PAGE_TEXT.purchaseConfirmation, { timeout: TIMEOUTS.default })
         .should("be.visible");

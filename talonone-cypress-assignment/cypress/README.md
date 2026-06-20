@@ -149,8 +149,7 @@ Then select the required test file from the Cypress test runner.
 
 * Dynamic usernames are generated during tests to avoid duplicate signup failures.
 * The Demoblaze application uses browser alerts, so Cypress stubs are used to validate alert messages.
-* Some backend responses return HTTP 200 even for functional failures such as invalid login, so alert validation is used for user-facing error verification.
-* The application is a public demo site, so occasional slowness or instability may occur.
+* The public Demoblaze website can occasionally be flaky. If a test fails, please retry the execution once. Additional timeouts and alert validations have been added to improve reliability.
 
 ## Future Improvements
 

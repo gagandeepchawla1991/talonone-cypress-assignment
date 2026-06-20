@@ -1,7 +1,6 @@
 import HomePage from "../../pages/HomePage";
 import LoginPage from "../../pages/LoginPage";
-import { API_ENDPOINTS } from "../../support/constants";
-import { STATUS_CODES } from "../../support/constants/statusCodes";
+import { API_ENDPOINTS, STATUS_CODES } from "../../support/constants";
 
 describe("Invalid Login Test", () => {
   it("should show an error message for invalid credentials", () => {

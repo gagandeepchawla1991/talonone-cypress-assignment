@@ -1,6 +1,13 @@
-import { API_ENDPOINTS, BUTTON_TEXT, CATEGORY_NAMES, NAV_LINKS, PAGE_TEXT, SELECTORS } from "../../support/constants";
-import { STATUS_CODES } from "../../support/constants/statusCodes";
-import { TIMEOUTS } from "../../support/constants/timeouts";
+import {
+  API_ENDPOINTS,
+  BUTTON_TEXT,
+  CATEGORY_NAMES,
+  NAV_LINKS,
+  PAGE_TEXT,
+  SELECTORS,
+  STATUS_CODES,
+  TIMEOUTS,
+} from "../../support/constants";
 
 describe("Homepage Smoke Test", () => {
   beforeEach(() => {

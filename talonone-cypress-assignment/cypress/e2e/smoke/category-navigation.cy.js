@@ -1,7 +1,12 @@
 import HomePage from "../../pages/HomePage";
-import { API_ENDPOINTS, CATEGORY_NAMES, PRODUCT_NAMES, SELECTORS } from "../../support/constants";
-import { STATUS_CODES } from "../../support/constants/statusCodes";
-import { TIMEOUTS } from "../../support/constants/timeouts";
+import {
+  API_ENDPOINTS,
+  CATEGORY_NAMES,
+  PRODUCT_NAMES,
+  SELECTORS,
+  STATUS_CODES,
+  TIMEOUTS,
+} from "../../support/constants";
 
 describe("Category Navigation Test", () => {
   beforeEach(() => {
