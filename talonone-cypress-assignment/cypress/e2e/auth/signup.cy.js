@@ -8,6 +8,7 @@ describe("Signup Test", () => {
 
     cy.visit("/");
 
+    // Create a new user account
     cy.intercept("POST", "**/signup").as("signupRequest");
 
     HomePage.openSignup();
@@ -25,6 +26,7 @@ describe("Signup Test", () => {
       .its("response.statusCode")
       .should("eq", 200);
 
+    // Verify successful account creation
     cy.get("@signupAlert")
       .should("have.been.calledWithMatch", /Sign up successful/);
   });

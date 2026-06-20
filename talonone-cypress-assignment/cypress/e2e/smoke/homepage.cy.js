@@ -4,12 +4,14 @@ describe("Homepage Smoke Test", () => {
   });
 
   it("should load homepage successfully", () => {
+    // Verify application branding is displayed
     cy.get("#nava")
       .should("be.visible")
       .and("contain", "PRODUCT STORE");
   });
 
   it("should display all product categories", () => {
+    // Verify product categories are available to users
     cy.get("#cat")
       .should("be.visible");
 
@@ -20,6 +22,7 @@ describe("Homepage Smoke Test", () => {
   });
 
   it("should display navigation menu items", () => {
+    // Verify primary navigation menu items
     cy.get(".navbar-nav")
       .should("be.visible")
       .within(() => {
@@ -33,6 +36,7 @@ describe("Homepage Smoke Test", () => {
   });
 
   it("should display products on homepage", () => {
+    // Verify products are loaded successfully from the backend
     cy.intercept("GET", "**/entries").as("loadProducts");
 
     cy.reload();
